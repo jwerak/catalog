@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+data:
+  ansible.cfg: W2dhbGF4eV0Kc2VydmVyX2xpc3QgPSBhdXRvbWF0aW9uX2h1YiwgZ2FsYXh5CgpbZ2FsYXh5X3NlcnZlci5nYWxheHldCnVybD1odHRwczovL2dhbGF4eS5hbnNpYmxlLmNvbS8KCltnYWxheHlfc2VydmVyLmF1dG9tYXRpb25faHViXQp1cmw9aHR0cHM6Ly9jb25zb2xlLnJlZGhhdC5jb20vYXBpL2F1dG9tYXRpb24taHViLwphdXRoX3VybD1odHRwczovL3Nzby5yZWRoYXQuY29tL2F1dGgvcmVhbG1zL3JlZGhhdC1leHRlcm5hbC9wcm90b2NvbC9vcGVuaWQtY29ubmVjdC90b2tlbgp0b2tlbj1bSElEREVOXQoK
+kind: Secret
+metadata:
+  name: custom-ansible-config
+type: Opaque
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: ansible-ee-test-run
+  namespace: ansible-ees
+spec:
+  params:
+    - name: BUILDER_IMAGE
+      value: >-
+        registry.redhat.io/ansible-automation-platform-21/ansible-builder-rhel8:1.0.1-47
+  resources: {}
+  serviceAccountName: pipeline
+  taskRef:
+    kind: Task
+    name: ansible-builder
+  timeout: 1h0m0s
+  workspaces:
+    - name: source
+      persistentVolumeClaim:
+        claimName: ansible-builder-pvc
+    - name: ansible-config
+      secret:
+        secretName: custom-ansible-config
