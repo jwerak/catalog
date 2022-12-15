@@ -55,13 +55,11 @@ spec:
 
         cat $(workspaces.source.path)/ansible.cfg
 
-        if [ "$(workspaces.ansible-config.bound)" == "true" ] ; then
+        if [ "$(workspaces.ansible-config.bound)" == "true" ]; then
           echo "Custom ansible config is bound"
           [ -f $(workspaces.ansible-config.path)/ansible.cfg ] && \
             cp $(workspaces.ansible-config.path)/ansible.cfg $(workspaces.source.path)/ansible.cfg && \
-            echo "ansible.cfg updated"
+            echo "ansible.cfg updated from workspace"
         fi
-
-        cat $(workspaces.source.path)/ansible.cfg
 
         ansible-builder create -f "$(params.FILENAME)" -c "$(params.BUILD_CONTEXT)" --output-filename "$(params.OUTPUT_FILENAME)" -v "$(params.VERBOSITY)"    
